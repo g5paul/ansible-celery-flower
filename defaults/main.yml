@@ -7,8 +7,10 @@ flower_user: "{{deploy_user|default('root')}}"        # User to run flower
 flower_group: "{{deploy_group|default('root')}}"      # Group to run flower
 
 flower_app_name: "{{deploy_app_name|default('web')}}" # Application name
+flower_app_module_enabled: yes
 flower_app_module: "{{flower_app_name}}"              # Set to application module
 flower_host: localhost
+flower_address: 0.0.0.0
 flower_port: 5555
 flower_broker: "amqp://guest:guest@localhost:5672//"  # Broker URL
 
