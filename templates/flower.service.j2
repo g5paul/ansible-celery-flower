@@ -1,0 +1,53 @@
+[Unit]
+Description=flower Service
+After=network.target rabbitmq-server.service celery.service
+
+[Service]
+Type=simple
+Restart=on-failure
+User={{ flower_user }}
+Group={{ flower_group }}
+EnvironmentFile=/etc/default/flower
+WorkingDirectory={{ flower_work_dir }}
+# Run ExecStartPre with root-permissions
+#PermissionsStartOnly=true
+ExecStartPre=/bin/sh -c '/bin/echo /usr/local/bin/flower --pidfile="$FLOWER_PID_FILE" \
+                               --logfile="$FLOWER_LOG_FILE" \
+                               --loglevel="$FLOWER_LOG_LEVEL" \
+                               {%  if flower_app_module_enabled %}
+                               --app="$FLOWER_APP" \
+                               {%  endif %}
+                               --workdir="$FLOWER_CHDIR" \
+                               --uid="$USER" \
+                               --gid="$GROUP" \
+                               --broker="$FLOWER_BROKER" \
+                               --address="$FLOWER_ADDRESS" \
+                               --port="$FLOWER_PORT" \
+                               {%  if flower_url_prefix_enabled %}
+                               --url_prefix="$FLOWER_URL_PREFIX" \
+                               {%  endif %}
+                               {%  if flower_basic_auth_enabled %}
+                               --basic_auth="$FLOWER_BASIC_AUTH"
+                               {%  endif %} > /tmp/flower_systemd_cmd.txt'
+
+ExecStart=/bin/sh -c '/usr/local/bin/flower --pidfile="$FLOWER_PID_FILE" \
+                               --logfile="$FLOWER_LOG_FILE" \
+                               --loglevel="$FLOWER_LOG_LEVEL" \
+                               {%  if flower_app_module_enabled %}
+                               --app="$FLOWER_APP" \
+                               {%  endif %}
+                               --workdir="$FLOWER_CHDIR" \
+                               --uid="$USER" \
+                               --gid="$GROUP" \
+                               --broker="$FLOWER_BROKER" \
+                               --address="$FLOWER_ADDRESS" \
+                               --port="$FLOWER_PORT" \
+                               {%  if flower_url_prefix_enabled %}
+                               --url_prefix="$FLOWER_URL_PREFIX" \
+                               {%  endif %}
+                               {%  if flower_basic_auth_enabled %}
+                               --basic_auth="$FLOWER_BASIC_AUTH"
+                               {%  endif %}'
+
+[Install]
+WantedBy=multi-user.target
