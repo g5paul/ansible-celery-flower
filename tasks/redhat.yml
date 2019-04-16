@@ -1,0 +1,23 @@
+---
+- name: redhat | Installing xxx (!=Fedora)
+  yum:
+    name: "xxx"
+    state: "present"
+  become: true
+  when: ansible_distribution != "Fedora"
+
+- name: redhat | Installing xx (==Fedora)
+  dnf:
+    name: "{{ item }}"
+    state: "present"
+  become: true
+  with_items:
+    - 'xxx'
+  when: ansible_distribution == "Fedora"
+
+- name: redhat | Ensuring xxx Service Is Started And Enabled On Boot
+  service:
+    name: "xxx"
+    state: "started"
+    enabled: true
+  become: true

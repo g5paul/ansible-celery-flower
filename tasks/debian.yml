@@ -1,0 +1,72 @@
+---
+- name: debian | Installing Pre-Reqs
+  apt:
+    name: "{{ item }}"
+    state: "present"
+  become: true
+  with_items:
+    - 'python-pip'
+    - 'python-setuptools'
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: debian | Installing Flower
+  pip:
+    name: "{{ item }}"
+    state: "present"
+  become: true
+  with_items:
+    - 'flower=={{ flower_version }}'
+    - 'tornado==4.5.3'
+    - 'celery==3.1.25'
+    - 'kombu==3.0.37'
+    - 'billiard==3.3.0.23'
+    - 'Babel==2.6.0'
+    - 'amqp==1.4.9'
+  ignore_errors: "{{ ansible_check_mode }}"
+
+#- name: debian | Installing Flower 
+#  become: true
+#  pip:
+#    name: flower
+#    version: "{{ flower_version }}"
+#    state: present
+#  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Create /etc/flower
+  file:
+    name: /etc/flower
+    state: directory
+  become: true
+  #become_method: sudo
+
+#- name: Install Upstart script
+#  template: src=upstart.conf.j2 dest=/etc/init/{{ flower_app_name }}-flower.conf
+#  notify: Restart Flower
+#  become: true
+#  become_method: sudo
+
+- name: Install flower configuration
+  template: 
+    src: flower.conf.j2 
+    dest: /etc/default/flower 
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+
+- name: Copy flower.service template
+  template:
+    src: flower.service.j2
+    dest: /etc/systemd/system/flower.service
+    owner: root
+    group: root
+    mode: '0644'
+  become: true
+
+- service:
+    name: flower
+    enabled: yes
+#    daemon_reload: yes
+#    state: started
+  become: true
+

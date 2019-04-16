@@ -1,23 +1,10 @@
 ---
-# tasks file for rtindru.flower-celery
+# tasks file for flower-celery
+- include: debian.yml
+  when: ansible_os_family == "Debian"
 
-- name: Install Flower
-  pip:
-    name: flower
-    version: "{{ flower_version }}"
-    state: present
-  become: true
-  become_method: sudo
+#- include: redhat.yml
+#  when: ansible_os_family == "RedHat"
 
-- name: Create /etc/flower
-  file:
-    name: /etc/flower
-    state: directory
-  become: true
-  become_method: sudo
 
-- name: Install Upstart script
-  template: src=upstart.conf.j2 dest=/etc/init/{{ flower_app_name }}-flower.conf
-  notify: Restart Flower
-  become: true
-  become_method: sudo
+
