@@ -1,0 +1,29 @@
+# {{ ansible_managed }}
+# See
+# http://docs.celeryproject.org/en/latest/userguide/daemonizing.html#usage-systemd
+
+USER="{{ flower_user }}"
+GROUP="{{ flower_group }}"
+FLOWER_NAME=""
+{%  if flower_app_module_enabled %}
+FLOWER_APP="{{ flower_app_module }}"
+{%  endif %}
+FLOWER_CHDIR="{{ flower_work_dir }}"
+FLOWER_LOG_FILE="{{ flower_log_dir }}/flower.log"
+FLOWER_PID_FILE="{{ flower_run_dir }}/flower.pid"
+{%  if flower_basic_auth_enabled %}
+FLOWER_BASIC_AUTH="{{ flower_basic_auth }}"
+{%  endif %}
+{%  if flower_url_prefix_enabled %}
+FLOWER_URL_PREFIX="{{ flower_url_prefix }}"
+{%  endif %}
+FLOWER_BROKER="{{ flower_broker }}"
+FLOWER_HOST="{{ flower_host }}"
+FLOWER_PORT="{{ flower_port }}"
+FLOWER_ADDRESS="{{ flower_address }}"
+FLOWER_LOG_LEVEL="{{ flower_log_level }}"
+
+
+
+
+
